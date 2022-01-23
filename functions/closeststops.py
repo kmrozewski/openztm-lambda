@@ -20,7 +20,7 @@ def get_stops():
 stops = get_stops()
 
 
-def lambda_handler(event, context):
+def handler(event, context):
     if 'origin' in event['headers']:
         print(f"Origin {event['headers']['origin']}")
         print(f"Allowed {get_allowed_origin(event['headers'])}")
@@ -75,7 +75,12 @@ def sub_formula_a(phi1, phi2, delta_phi, delta_lambda):
 
 
 def get_params(latitude1, longitude1, latitude2, longitude2):
-    return [deg_to_rad(latitude1), deg_to_rad(latitude2), deg_to_rad(latitude2 - latitude1), deg_to_rad(longitude2 - longitude1)]
+    return [
+        deg_to_rad(latitude1),
+        deg_to_rad(latitude2),
+        deg_to_rad(latitude2 - latitude1),
+        deg_to_rad(longitude2 - longitude1)
+    ]
 
 
 def get_distance_in_meters(latitude1, longitude1, latitude2, longitude2):
