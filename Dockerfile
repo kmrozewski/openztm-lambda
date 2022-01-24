@@ -2,7 +2,7 @@
 ARG LAMBDA_FUNCTION
 ARG FUNCTION_DIR="/function"
 
-FROM python:3.9-slim-buster as build-image
+FROM python:3.9-buster as build-image
 
 # Install aws-lambda-cpp build dependencies
 RUN apt-get update && \
@@ -23,8 +23,8 @@ COPY functions/${LAMBDA_FUNCTION} ${FUNCTION_DIR}
 COPY requirements.txt .
 
 # Install dependencies and the runtime interface client (ric)
-RUN pip install -r requirements.txt --target ${FUNCTION_DIR}
-RUN pip install --target ${FUNCTION_DIR} awslambdaric
+RUN pip3 install -r requirements.txt --target ${FUNCTION_DIR}
+RUN pip3 install --target ${FUNCTION_DIR} awslambdaric
 
 
 # Multi-stage build: grab a fresh copy of the base image
