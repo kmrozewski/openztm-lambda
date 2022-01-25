@@ -9,12 +9,14 @@ pipeline {
             }
         }
         stage('tag') {
-            withCredentials([
-                [string(credentialsId: 'aws-account-id', variable: 'AWS_ACCOUNT_ID')],
-                [string(credentialsId: 'aws-region', variable: 'AWS_REGION')]
-                ]) {
-                    sh "docker tag openztm-closest-stops:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/openztm-closest-stops:latest"
-                }
+            steps {
+                withCredentials([
+                    [string(credentialsId: 'aws-account-id', variable: 'AWS_ACCOUNT_ID')],
+                    [string(credentialsId: 'aws-region', variable: 'AWS_REGION')]
+                    ]) {
+                        sh "docker tag openztm-closest-stops:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/openztm-closest-stops:latest"
+                    }
+            }
         }
         stage('ready to push') {
             options {
