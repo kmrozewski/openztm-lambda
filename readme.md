@@ -14,10 +14,14 @@ e.g. to build lambda docker image with `closeststops.py`, run following command
 ```
 
 # Tests
-Type `./run-tests.sh` to execute all tests in the `tests` dir. Use following command to start one test suite
+Type `./run_tests.sh` to execute all tests in the `tests` dir. Use following command to start one test suite
 ```bash
- python -m unittest tests/closest-stops-test.py -v
+ python -m unittest tests/test_closeststops.py -v
 ```
+
+## Coverage
+Type `./run_coverage.sh` to run unittests with coverage. You will be able to view the coverage report in html.
+
 
 # Deployment
 Based on [AWS documentation](https://docs.aws.amazon.com/lambda/latest/dg/images-create.html)

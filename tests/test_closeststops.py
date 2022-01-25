@@ -27,7 +27,6 @@ from functions.closeststops import get_distance_in_meters
 
 
 class TestClosestStops(TestCase):
-
     def test_should_return_correct_distance(self):
         # given
         papiesz_lat = 41.90218803264449

@@ -1,4 +1,9 @@
 **/*.pyc
-__pycache__
+**/__pycache__
 venv
 .idea
+*.iml
+.coverage
+htmlcov
+.DS_Store
+
