@@ -11,8 +11,8 @@ pipeline {
         stage('tag') {
             steps {
                 withCredentials([
-                    [string(credentialsId: 'aws-account-id', variable: 'AWS_ACCOUNT_ID')],
-                    [string(credentialsId: 'aws-region', variable: 'AWS_REGION')]
+                    string(credentialsId: 'aws-account-id', variable: 'AWS_ACCOUNT_ID'),
+                    string(credentialsId: 'aws-region', variable: 'AWS_REGION')
                     ]) {
                         sh "docker tag openztm-closest-stops:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/openztm-closest-stops:latest"
                     }
@@ -30,8 +30,8 @@ pipeline {
             steps {
                 withCredentials([
                 [$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-keys', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'],
-                [string(credentialsId: 'aws-account-id', variable: 'AWS_ACCOUNT_ID')],
-                [string(credentialsId: 'aws-region', variable: 'AWS_REGION')]
+                string(credentialsId: 'aws-account-id', variable: 'AWS_ACCOUNT_ID'),
+                string(credentialsId: 'aws-region', variable: 'AWS_REGION')
                 ]) {
                     sh "aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com"
                     sh "docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/openztm-closest-stops:latest"
@@ -41,8 +41,8 @@ pipeline {
         stage('clean up') {
             steps {
                 withCredentials([
-                [string(credentialsId: 'aws-account-id', variable: 'AWS_ACCOUNT_ID')],
-                [string(credentialsId: 'aws-region', variable: 'AWS_REGION')]
+                string(credentialsId: 'aws-account-id', variable: 'AWS_ACCOUNT_ID'),
+                string(credentialsId: 'aws-region', variable: 'AWS_REGION')
                 ]) {
                     echo 'Before:'
                     sh 'docker images -a'
