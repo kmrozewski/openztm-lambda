@@ -63,7 +63,7 @@ pipeline {
             steps {
                 echo 'Before:'
                 sh 'docker images -a'
-                sh "docker rmi -f $(docker images -aq)"
+                sh 'docker image prune --force --all'
                 echo 'After:'
                 sh 'docker images -a'
             }
