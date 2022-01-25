@@ -14,7 +14,7 @@ pipeline {
                     string(credentialsId: 'aws-account-id', variable: 'AWS_ACCOUNT_ID'),
                     string(credentialsId: 'aws-region', variable: 'AWS_REGION')
                     ]) {
-                        sh "docker tag openztm-closest-stops:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/openztm-closest-stops:latest"
+                        sh "docker tag openztm-closest-stops:latest ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/openztm-closest-stops:latest"
                     }
             }
         }
@@ -33,8 +33,8 @@ pipeline {
                 string(credentialsId: 'aws-account-id', variable: 'AWS_ACCOUNT_ID'),
                 string(credentialsId: 'aws-region', variable: 'AWS_REGION')
                 ]) {
-                    sh "aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com"
-                    sh "docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/openztm-closest-stops:latest"
+                    sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+                    sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/openztm-closest-stops:latest"
                 }
             }
         }
@@ -46,7 +46,7 @@ pipeline {
                 ]) {
                     echo 'Before:'
                     sh 'docker images -a'
-                    sh "docker rmi -f $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/openztm-closest-stops"
+                    sh "docker rmi -f ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/openztm-closest-stops"
                     sh "docker rmi -f openztm-closest-stops"
                     echo 'After:'
                     sh 'docker images -a'
