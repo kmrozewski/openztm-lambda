@@ -29,9 +29,9 @@ Based on [AWS documentation](https://docs.aws.amazon.com/lambda/latest/dg/images
 In order to push the image (based on example from the `Build` step)
 ```bash
 # Login into AWS ECR
-aws ecr get-login-password --region <AWS-REGION> | docker login --username AWS --password-stdin 123456789012.dkr.ecr.us-east-1.amazonaws.com
+aws ecr get-login-password --region <AWS-REGION> | docker login --username AWS --password-stdin <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com
 # Tag local docker image from the build step
-docker tag  openztm-closest-stops:latest 123456789012.dkr.ecr.us-east-1.amazonaws.com/openztm-closest-stops:latest
+docker tag  openztm-closest-stops:latest <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/openztm-closest-stops:latest
 # Push the docker image to AWS ECR
-docker push 123456789012.dkr.ecr.us-east-1.amazonaws.com/openztm-closest-stops:latest        
+docker push <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/openztm-closest-stops:latest        
 ```
