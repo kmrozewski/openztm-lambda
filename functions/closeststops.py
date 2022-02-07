@@ -1,6 +1,6 @@
-import json
-import boto3
-import math
+from boto3 import resource
+from json import loads, dumps
+from math import atan2, cos, pi, sqrt, sin
 
 EARTH_MEAN_RADIUS_METRES = 6371e3
 allowed_origins = [
@@ -11,10 +11,10 @@ allowed_origins = [
 
 
 def get_stops():
-    s3 = boto3.resource('s3')
+    s3 = resource('s3')
     response = s3.get_object(Bucket='open-ztm-files', Key='stops.json')
     content = response['Body'].read().decode('utf-8')
-    return json.loads(content)
+    return loads(content)
 
 
 stops = get_stops()
@@ -39,7 +39,7 @@ def handler(event, context):
             'Access-Control-Allow-Origin': get_allowed_origin(event['headers']),
             'Access-Control-Allow-Methods': 'OPTIONS,GET'
         },
-        'body': json.dumps(closest)
+        'body': dumps(closest)
     }
 
 
@@ -47,14 +47,23 @@ def get_closest_stops(latitude, longitude, radius):
     closest = []
     for stop in stops:
         distance = get_distance_in_meters(latitude, longitude, stop['stopLat'], stop['stopLon'])
-        if distance <= radius:
+        if is_closest(distance, radius) and is_valid_stop(stop):
             closest.append({'distance': distance, 'stop': stop})
 
     return closest
 
 
+def is_closest(distance, radius):
+    return distance <= radius
+
+
+def is_valid_stop(stop):
+    return (stop['stopCode'] is not None
+            and stop['stopName'] is not None)
+
+
 def deg_to_rad(deg):
-    return deg * math.pi / 180.0
+    return deg * pi / 180.0
 
 
 def distance_formula(c):
@@ -62,16 +71,16 @@ def distance_formula(c):
 
 
 def sub_formula_c(a):
-    return 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    return 2 * atan2(sqrt(a), sqrt(1 - a))
 
 
 def sub_formula_a(phi1, phi2, delta_phi, delta_lambda):
-    return (math.sin(delta_phi / 2)
-        * math.sin(delta_phi / 2)
-        + math.cos(phi1)
-        * math.cos(phi2)
-        * math.sin(delta_lambda / 2)
-        * math.sin(delta_lambda / 2))
+    return (sin(delta_phi / 2)
+        * sin(delta_phi / 2)
+        + cos(phi1)
+        * cos(phi2)
+        * sin(delta_lambda / 2)
+        * sin(delta_lambda / 2))
 
 
 def get_params(latitude1, longitude1, latitude2, longitude2):
