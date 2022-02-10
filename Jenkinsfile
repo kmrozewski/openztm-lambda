@@ -2,11 +2,11 @@ pipeline {
     agent any
 
     stages {
-        stage('setup parameters') {
+        stage('setup params') {
             steps {
                 script {
                     properties([
-                        parameters([
+                        params([
                             choice(
                                 name: 'LAMBDA_FUNCTION',
                                 choices: ['openztm-closest-stops', 'openztm-s3-upload'],
@@ -18,7 +18,7 @@ pipeline {
         }
         stage('build') {
             steps {
-                sh "./build.sh -n ${parameters.LAMBDA_FUNCTION} -f ${parameters.LAMBDA_FUNCTION == 'openztm-closest-stops' ? 'closeststops.py' : 's3upload.py'}"
+                sh "./build.sh -n ${params.LAMBDA_FUNCTION} -f ${params.LAMBDA_FUNCTION == 'openztm-closest-stops' ? 'closeststops.py' : 's3upload.py'}"
                 sh "docker images -a"
             }
         }
@@ -28,7 +28,7 @@ pipeline {
                     string(credentialsId: 'aws-account-id', variable: 'AWS_ACCOUNT_ID'),
                     string(credentialsId: 'aws-region', variable: 'AWS_REGION')
                     ]) {
-                        sh "docker tag ${parameters.LAMBDA_FUNCTION}:latest ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${parameters.LAMBDA_FUNCTION}:latest"
+                        sh "docker tag ${params.LAMBDA_FUNCTION}:latest ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${params.LAMBDA_FUNCTION}:latest"
                     }
             }
         }
@@ -48,7 +48,7 @@ pipeline {
                 string(credentialsId: 'aws-region', variable: 'AWS_REGION')
                 ]) {
                     sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
-                    sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${parameters.LAMBDA_FUNCTION}:latest"
+                    sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${params.LAMBDA_FUNCTION}:latest"
                 }
             }
         }
@@ -60,8 +60,8 @@ pipeline {
                 ]) {
                     echo 'Before:'
                     sh 'docker images -a'
-                    sh "docker rmi -f ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${parameters.LAMBDA_FUNCTION}"
-                    sh "docker rmi -f ${parameters.LAMBDA_FUNCTION}"
+                    sh "docker rmi -f ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${params.LAMBDA_FUNCTION}"
+                    sh "docker rmi -f ${params.LAMBDA_FUNCTION}"
                     echo 'After:'
                     sh 'docker images -a'
                 }
