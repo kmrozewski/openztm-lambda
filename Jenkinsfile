@@ -9,7 +9,7 @@ pipeline {
                         params([
                             choice(
                                 name: 'LAMBDA_FUNCTION',
-                                choices: ['openztm-closest-stops', 'openztm-s3-upload'],
+                                choices: 'openztm-closest-stops\nopenztm-s3-upload',
                                 description: 'Pick up lambda function to deploy')
                         ])
                     ])
