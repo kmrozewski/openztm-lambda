@@ -1,7 +1,3 @@
-def lambdaSources = [
-    'openztm-closest-stops': 'closeststops.py',
-    'openztm-s3-upload': 's3upload.py'
-]
 pipeline {
     agent any
 
@@ -22,7 +18,7 @@ pipeline {
         }
         stage('build') {
             steps {
-                sh "./build.sh -n ${parameters.LAMBDA_FUNCTION} -f ${lambdaSources[parameters.LAMBDA_FUNCTION]}"
+                sh "./build.sh -n ${parameters.LAMBDA_FUNCTION} -f ${parameters.LAMBDA_FUNCTION == 'openztm-closest-stops' ? 'closeststops.py' : 's3upload.py'}"
                 sh "docker images -a"
             }
         }
