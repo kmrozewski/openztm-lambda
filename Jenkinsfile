@@ -1,11 +1,20 @@
+def lambdaSources = [
+    'openztm-closest-stops': 'closeststops.py',
+    'openztm-s3-upload': 's3upload.py'
+]
+
+parameters {
+    choice(name: 'LAMBDA_FUNCTION', choices: ['openztm-closest-stops', 'openztm-s3-upload'], description: 'Pick up lambda function to deploy')
+}
+
 pipeline {
     agent any
 
     stages {
         stage('build') {
             steps {
-                sh './build.sh -n openztm-closest-stops -f closeststops.py'
-                sh 'docker images -a'
+                sh "./build.sh -n ${parameters.LAMBDA_FUNCTION} -f ${lambdaSources[parameters.LAMBDA_FUNCTION]}"
+                sh "docker images -a"
             }
         }
         stage('tag') {
@@ -14,7 +23,7 @@ pipeline {
                     string(credentialsId: 'aws-account-id', variable: 'AWS_ACCOUNT_ID'),
                     string(credentialsId: 'aws-region', variable: 'AWS_REGION')
                     ]) {
-                        sh "docker tag openztm-closest-stops:latest ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/openztm-closest-stops:latest"
+                        sh "docker tag ${parameters.LAMBDA_FUNCTION}:latest ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${parameters.LAMBDA_FUNCTION}:latest"
                     }
             }
         }
@@ -34,7 +43,7 @@ pipeline {
                 string(credentialsId: 'aws-region', variable: 'AWS_REGION')
                 ]) {
                     sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
-                    sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/openztm-closest-stops:latest"
+                    sh "docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${parameters.LAMBDA_FUNCTION}:latest"
                 }
             }
         }
@@ -46,8 +55,8 @@ pipeline {
                 ]) {
                     echo 'Before:'
                     sh 'docker images -a'
-                    sh "docker rmi -f ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/openztm-closest-stops"
-                    sh "docker rmi -f openztm-closest-stops"
+                    sh "docker rmi -f ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${parameters.LAMBDA_FUNCTION}"
+                    sh "docker rmi -f ${parameters.LAMBDA_FUNCTION}"
                     echo 'After:'
                     sh 'docker images -a'
                 }
