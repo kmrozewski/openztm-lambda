@@ -62,7 +62,7 @@ class TestClosestStops(TestCase):
         stops = get_closest_stops(lat, lon, 500)
 
         # then
-        self.assertEqual(19, len(stops), msg='Should find 19 closes stops based on the stops.json file')
+        self.assertEqual(24, len(stops), msg='Should find 24 closes stops based on the stops.json file')
 
 
 if __name__ == '__main__':

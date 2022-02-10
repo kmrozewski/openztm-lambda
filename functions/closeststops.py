@@ -47,7 +47,7 @@ def get_closest_stops(latitude, longitude, radius):
     closest = []
     for stop in stops:
         distance = get_distance_in_meters(latitude, longitude, stop['stopLat'], stop['stopLon'])
-        if is_closest(distance, radius) and is_valid_stop(stop):
+        if is_closest(distance, radius):
             closest.append({'distance': distance, 'stop': stop})
 
     return closest
@@ -55,11 +55,6 @@ def get_closest_stops(latitude, longitude, radius):
 
 def is_closest(distance, radius):
     return distance <= radius
-
-
-def is_valid_stop(stop):
-    return (stop['stopCode'] is not None
-            and stop['stopName'] is not None)
 
 
 def deg_to_rad(deg):
