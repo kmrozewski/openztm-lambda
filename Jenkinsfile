@@ -1,21 +1,14 @@
 pipeline {
     agent any
 
+    parameters {
+        choice(
+            name: 'LAMBDA_FUNCTION',
+            choices: "openztm-closest-stops\nopenztm-s3-upload",
+            description: "Pick up lambda function to deploy")
+    }
+
     stages {
-        stage('setup params') {
-            steps {
-                script {
-                    properties([
-                        params([
-                            choice(
-                                name: 'LAMBDA_FUNCTION',
-                                choices: 'openztm-closest-stops\nopenztm-s3-upload',
-                                description: 'Pick up lambda function to deploy')
-                        ])
-                    ])
-                }
-            }
-        }
         stage('build') {
             steps {
                 sh "./build.sh -n ${params.LAMBDA_FUNCTION} -f ${params.LAMBDA_FUNCTION == 'openztm-closest-stops' ? 'closeststops.py' : 's3upload.py'}"
