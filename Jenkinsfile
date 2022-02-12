@@ -9,6 +9,11 @@ pipeline {
     }
 
     stages {
+        stage('test') {
+            steps {
+                sh "./run_tests.sh"
+            }
+        }
         stage('build') {
             steps {
                 sh "./build.sh -n ${params.LAMBDA_FUNCTION} -f ${params.LAMBDA_FUNCTION == 'openztm-closest-stops' ? 'closeststops.py' : 's3upload.py'}"
